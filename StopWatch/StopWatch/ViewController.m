@@ -10,7 +10,9 @@
 #import "LSIStopWatch.h"
 
 
-// TODO: Create a KVOContext to identify the StopWatch observer
+// Create a KVOContext to identify the StopWatch observer
+// void * = AnyObject
+void *KVOContext = &KVOContext; // store the address of KVOContext
 
 
 @interface ViewController ()
@@ -71,23 +73,44 @@
     if (stopwatch != _stopwatch) {
         
         // willSet
-		// TODO: Cleanup KVO - Remove Observers
+		// Cleanup KVO - Remove Observers
+        [_stopwatch removeObserver:self forKeyPath:@"running" context:KVOContext];
+        [_stopwatch removeObserver:self forKeyPath:@"elapsedTime" context:KVOContext];
 
         _stopwatch = stopwatch;
         
         // didSet
-		// TODO: Setup KVO - Add Observers
+		// Setup KVO - Add Observers
+        
+        // state changes:
+        // running
+        [_stopwatch addObserver:self forKeyPath:@"running" options:NSKeyValueObservingOptionInitial context:KVOContext];
+        [_stopwatch addObserver:self forKeyPath:@"elapsedTime" options:NSKeyValueObservingOptionInitial context:KVOContext];
     }
     
 }
 
 
-// TODO: Review docs and implement observerValueForKeyPath
+// Review docs and implement observerValueForKeyPath
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == KVOContext) {
+        if ([keyPath isEqualToString:@"running"]) {
+            [self updateViews];
+        }
+        if ([keyPath isEqualToString:@"elapsedTime"]) {
+            [self updateViews];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
 
 
 - (void)dealloc {
-	// TODO: Stop observing KVO (otherwise it will crash randomly)
-    
+    NSLog(@"dealloc");
+	// Stop observing KVO (otherwise it will crash randomly)
+    self.stopwatch = nil;
 }
 
 @end
