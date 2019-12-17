@@ -67,6 +67,15 @@
     
     NSLog(@"%@", self.hrController);
     
+    NSLog(@"%@", [self.hrController valueForKeyPath:@"departments"]);
+    NSLog(@"%@", [self.hrController valueForKeyPath:@"departments.employees"]);
+    NSLog(@"%@", [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"]);
+    
+    NSArray *allEmployees = [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"];
+    
+    // Just gives you the number of the highest salary, not the employee with the highest salary
+    NSLog(@"Highest salary: %@", [allEmployees valueForKeyPath:@"@max.salary"]);
+    NSLog(@"Average salary: %@", [allEmployees valueForKeyPath:@"@avg.salary"]);
     
 }
 
