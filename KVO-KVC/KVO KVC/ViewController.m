@@ -65,9 +65,83 @@
     [controller addDepartment:marketing];
     self.hrController = controller;
     
-    NSLog(@"%@", self.hrController);
+//    NSLog(@"%@", self.hrController);
+    
+    // Key Value Coding: KVC
+    // * Core Data
+    // * Cocoa Bindings (UI + Model = SwiftUI)
+    // @property NSString *name;  // Properties are automatically KVC
+    // 1. Accessor for a property
+        // - (NSString *)name;
+    // 2. Setter for a property
+        // - (void)setName:(NSString *)name
+    // 3. Instance variable to set
+    // Modify our Data using the self.name syntax (not _name)
+    // 1. init/dealloc always use: _name =
+    // 2. Normal methods always use: self.name =
+    
+    NSString *name = [craig name];
+    NSLog(@"Name: %@", name);
+    
+    //    NSString *name2 = [craig valueForKey:@"name"];
+    //    NSString *name2 = [craig valueForKey:@"firstName"]; // No build issues, CRASHES at runtime!
+    NSString *name2 = [craig valueForKey:@"privateName"]; // No build issues, accesses a private property
+    NSLog(@"Name2: %@", name2);
+    
+    [craig setValue:@"Bob" forKey:@"name"];
+    NSLog(@"Name Change: %@", craig.name);
+    
+    // Collections and Keypaths
+    //    NSLog(@"Departments1: %@", [[self hrController] departments]); // method calling
+    //    NSLog(@"Departments2: %@", self.hrController.departments); // dot syntax
+    
+    // keypath: departments
+    NSLog(@"Departments3: %@", [self.hrController valueForKey/*path*/:@"departments"]); // kvc syntax
+    
+    NSLog(@"Department Name: %@", [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"]);
+    
+    NSArray<LSIEmployee *> *allEmployees = [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"];
+    NSLog(@"Department Employees: %@", allEmployees);
+    
+    NSLog(@"Salaries: %@", [allEmployees valueForKey/*Path*/:@"salary"]);
+    NSLog(@"Salaries: %@", [allEmployees valueForKeyPath:@"@max.salary"]);
+    NSLog(@"Salaries: %@", [allEmployees valueForKeyPath:@"@avg.salary"]);
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    NSLog(@"Departments: %@", [self.hrController departments]);
+//    NSLog(@"Departments: %@", [self.hrController valueForKeyPath:@"departments"]);
+//    
+//    NSLog(@"Departments employees: %@", [self.hrController valueForKeyPath:@"departments.employees"]);
+//    
+//    NSLog(@"Departments employees: %@", [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"]);
+//    
+//    NSArray *allEmployees = [self.hrController valueForKeyPath:@"departments.@distinctUnionOfArrays.employees"];
+//    
+//    NSLog(@"Salaries: %@", [allEmployees valueForKeyPath:@"salary"]);
+//    NSLog(@"Highest Salary: %@", [allEmployees valueForKeyPath:@"@max.salary"]); //@max @min @avg
+//    NSLog(@"Average Salary: %@", [allEmployees valueForKeyPath:@"@avg.salary"]);
 }
 
 
